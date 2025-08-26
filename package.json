@@ -1,0 +1,27 @@
+{
+  "name": "fastcrm-express-api",
+  "version": "1.0.0",
+  "description": "API de mi proyecto backend de Notas de WSP",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexanderG8/fastcrm-express-api.git"
+  },
+  "author": "Alexander Gomez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexanderG8/fastcrm-express-api/issues"
+  },
+  "homepage": "https://github.com/AlexanderG8/fastcrm-express-api#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
