@@ -2,8 +2,37 @@ import { Templates } from "../models/Template.js";
 
 export async function getAllTemplates(req, res){
     try {
-        const templates = await Templates.find({});
-    res.status(200).json(templates);
+        // Obtener parametro de busqueda 'q'
+        const searchQuery = req.query.q;
+        const typeFilter = req.query.type;
+
+        // Construimos el objeto de filtro
+        let filter = {};
+
+        // Si hay un parámetro de busqueda, añadimos la condición de busqueda por contenido
+        if(searchQuery){
+            // si existe un parametro de busqueda, usa $regex para buscar en el contenido
+            filter.content = {$regex: searchQuery, $options: 'i'} // 'i' para hacer la busqueda insensible a mayusculas y minusculas
+        }
+        // Si hay un parametro de tipo, validamos y añadimos la condición de filtro por tipo
+        if(typeFilter){
+            // Convertimos el filtro de tipo a minúsculas para hacer la comparación insensible a mayúsculas y minúsculas
+            const normalizedType = typeFilter.toLowerCase();
+            // Validamos que el tipo sea un valor permitido
+            const allowedTypes = ['welcome', 'seguimiento','bienvenida','cierre','notificaciones'];
+
+            if(!allowedTypes.includes(normalizedType)){
+                return res.status(400).json({
+                    error: 'Tipo de plantilla no válido',
+                    allowedTypes: allowedTypes
+                });
+            }
+
+            filter.type = normalizedType;
+        }
+        // Realizamos la busqueda con los filtros aplicados
+        const templates = await Templates.find(filter);
+        res.status(200).json(templates);
     } catch (error) {
         res.status(500).json({error: error.message});
     }

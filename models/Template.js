@@ -13,5 +13,9 @@ const templateSchema = new Schema({
     createdAt: {type: Date, default: Date.now}
 });
 
-// 
+// Crea indice en el campo content para optimizar busqueda
+templateSchema.index({content : 'text'});
+templateSchema.index({type: 1}); // Indice simple para el campo
+
+// Exporto el modelo
 export const Templates = mongoose.model('Templates', templateSchema);
