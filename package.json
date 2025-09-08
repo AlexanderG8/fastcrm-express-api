@@ -19,7 +19,9 @@
   },
   "homepage": "https://github.com/AlexanderG8/fastcrm-express-api#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
