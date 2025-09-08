@@ -19,10 +19,18 @@ model Contact{
   name String
   whatsapp String
   createAt DateTime @default(now())
+
+  //Relación con Company
+  companyId Int?
+  company Company? @relation(fields: [companyId], references: [id])
 }
 
 model Company{
   id Int @id @default(autoincrement())
   name String
+  ruc String
   createAt DateTime @default(now())
+
+  // Relación con Contact
+  contacts Contact[]
 }

@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { templateRouter } from './routes/templateRuotes.js';
 import { contactRouter } from './routes/contactRoutes.js';
+import { companyRouter } from './routes/companyRoutes.js';
 
 // Esta linea de código carga las variables de entorno desde el archivo .env
 // Se agrego debido a que estamos trabajando con Nodemon y no se está cargando el archivo .env por defecto
@@ -31,7 +32,7 @@ mongoose.connect(mongodb_url,{
  * allowedHeaders: Cebeceras permitidas
  */
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
 }));
@@ -46,6 +47,7 @@ app.get('/', (req, res) => {
 
 app.use('/api',templateRouter);
 app.use('/api', contactRouter);
+app.use('/api', companyRouter); // Añadir las rutas de empresas
 
 app.listen(port, () =>{
     console.log(`Servidor funcionando en http://localhost:${port}`);
