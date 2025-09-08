@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { templateRouter } from './routes/templateRuotes.js';
+import { contactRouter } from './routes/contactRoutes.js';
 
 // Esta linea de código carga las variables de entorno desde el archivo .env
 // Se agrego debido a que estamos trabajando con Nodemon y no se está cargando el archivo .env por defecto
@@ -44,6 +45,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api',templateRouter);
+app.use('/api', contactRouter);
 
 app.listen(port, () =>{
     console.log(`Servidor funcionando en http://localhost:${port}`);
