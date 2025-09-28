@@ -23,6 +23,9 @@ model Contact{
   //Relación con Company
   companyId Int?
   company Company? @relation(fields: [companyId], references: [id])
+  
+  // Relación con ContactLog
+  logs ContactLog[]
 }
 
 model Company{
@@ -33,4 +36,15 @@ model Company{
 
   // Relación con Contact
   contacts Contact[]
+}
+
+model ContactLog{
+  id Int @id @default(autoincrement())
+  date DateTime @default(now())
+  templateUsed String
+  notes String?
+  
+  // Relación con Contact
+  contactId Int
+  contact Contact @relation(fields: [contactId], references: [id])
 }

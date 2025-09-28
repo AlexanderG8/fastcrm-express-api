@@ -1,293 +1,122 @@
-# FastCRM Express API - Gestión de Plantillas WSP
+# FastCRM Express API
 
-Este proyecto es una API REST desarrollada con Express.js para gestionar plantillas de mensajes para WhatsApp en un CRM. Permite realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre las plantillas de mensajes.
+API RESTful para un sistema CRM desarrollado con Express.js y PostgreSQL, diseñado para gestionar contactos, empresas, plantillas de mensajes y registros de comunicación.
 
 ## Tecnologías Utilizadas
 
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
-- CORS
+- **Node.js**: Entorno de ejecución para JavaScript del lado del servidor
+- **Express.js**: Framework web para crear APIs RESTful
+- **PostgreSQL**: Sistema de gestión de base de datos relacional
+- **Prisma ORM**: ORM para interactuar con la base de datos de forma segura y eficiente
+- **Swagger/OpenAPI**: Documentación interactiva de la API
+- **Jest**: Framework para pruebas unitarias y de integración
+- **ESLint**: Herramienta de análisis de código estático
 
-## Requisitos Previos
+## Instrucciones de Instalación Local
 
-- Node.js (v14 o superior)
-- MongoDB
-- npm o yarn
-
-## Instalación
-
-1. Clona el repositorio:
+1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/AlexanderG8/fastcrm-express-api.git
+   git clone <url-del-repositorio>
    cd fastcrm-express-api
    ```
 
-2. Instala las dependencias:
+2. **Instalar dependencias**
    ```bash
    npm install
    ```
 
-3. Instala CORS para permitir solicitudes desde diferentes orígenes:
+3. **Configurar variables de entorno**
+   - Crear un archivo `.env` en la raíz del proyecto
+   - Añadir la configuración de la base de datos:
+     ```
+     DATABASE_URL="postgresql://usuario:contraseña@localhost:5432/fastcrm?schema=public"
+     PORT=3000
+     ```
+
+4. **Ejecutar migraciones de Prisma**
    ```bash
-   npm install cors
+   npx prisma migrate dev
    ```
 
-4. Crea un archivo `.env` en la raíz del proyecto con la siguiente información:
-   ```
-   MONGO_DB_URL=tu_url_de_mongodb
-   ```
-
-5. Inicia el servidor en modo desarrollo:
+5. **Iniciar el servidor**
    ```bash
    npm run dev
    ```
 
-## Estructura del Proyecto
+6. **Acceder a la documentación de la API**
+   - Abrir en el navegador: `http://localhost:3000/api-docs`
 
-```
-├── controllers/
-│   └── templateController.js    # Controladores para las operaciones CRUD
-├── models/
-│   └── Template.js              # Modelo de datos para las plantillas
-├── routes/
-│   └── templateRuotes.js        # Definición de rutas de la API
-├── index.js                     # Punto de entrada de la aplicación
-├── test/
-│   └── performanceTest.js       # Pruebas de rendimiento para las consultas
-├── performance-notes.md         # Documentación de optimizaciones y resultados
-├── performance-results.json     # Resultados detallados de las pruebas
-├── runPerformanceTest.js        # Script para ejecutar pruebas de rendimiento
-├── package.json
-└── README.md
-```
+## Funcionalidades Implementadas
 
-## Configuración de CORS
+### Core
+- CRUD completo para Contactos
+- CRUD completo para Empresas
+- CRUD completo para Plantillas de mensajes
+- CRUD completo para Registros de contacto (ContactLog)
 
-Para permitir solicitudes desde diferentes orígenes (por ejemplo, desde tu frontend en `http://localhost:5176`), se ha configurado CORS en el archivo `index.js`:
+### Extras
+- **Documentación con Swagger**: Interfaz interactiva para probar todos los endpoints
+- **Middleware de manejo de errores**: Centralización del manejo de errores para respuestas consistentes
+- **Middleware para rutas no encontradas**: Manejo adecuado de rutas inexistentes
+- **Relaciones entre entidades**: Relaciones entre contactos, empresas y registros de contacto
+- **Pruebas de rendimiento**: Scripts para evaluar el rendimiento de la API
 
-```javascript
-import cors from 'cors';
+## Decisiones Técnicas Clave
 
-// Configuración de CORS
-app.use(cors({
-    origin: 'http://localhost:5176', // Permite solicitudes desde tu frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-    allowedHeaders: ['Content-Type', 'Authorization'] // Cabeceras permitidas
-}));
-```
+1. **Uso de Prisma ORM**:
+   - Proporciona seguridad contra inyecciones SQL
+   - Facilita la definición del esquema y migraciones
+   - Genera tipos TypeScript automáticamente
 
-Para desarrollo, también puedes usar una configuración simplificada que permite solicitudes desde cualquier origen:
+2. **Arquitectura por capas**:
+   - Separación clara entre rutas, controladores y modelos
+   - Facilita el mantenimiento y la escalabilidad
 
-```javascript
-app.use(cors());
-```
+3. **Middleware de errores centralizado**:
+   - Manejo consistente de errores en toda la aplicación
+   - Respuestas de error estandarizadas
 
-## Endpoints de la API
+4. **Documentación con Swagger**:
+   - Documentación interactiva y actualizada de todos los endpoints
+   - Facilita las pruebas y la integración con frontends
 
-La API proporciona los siguientes endpoints para gestionar las plantillas:
+5. **Relaciones entre entidades**:
+   - Diseño de base de datos normalizado
+   - Integridad referencial garantizada por Prisma
 
-### Obtener todas las plantillas
-- **URL**: `/api/templates`
-- **Método**: `GET`
-- **Parámetros de consulta opcionales**:
-  - `q`: Búsqueda por palabras clave en el contenido (ej: `/api/templates?q=bienvenido`)
-  - `type`: Filtrado por tipo de mensaje (ej: `/api/templates?type=welcome`)
-  - Combinados: `/api/templates?q=bienvenido&type=welcome`
-- **Tipos permitidos**: `welcome`, `seguimiento`, `bienvenida`, `cierre`, `notificaciones`
-- **Respuesta exitosa**: Código 200
-  ```json
-  [
-    {
-      "_id": "60d21b4667d0d8992e610c85",
-      "type": "welcome",
-      "content": "Primera plantilla",
-      "author": "Alexander Gomez",
-      "createdAt": "2023-06-22T15:24:26.256Z"
-    },
-    {...}
-  ]
-  ```
-- **Respuesta de error para tipo inválido**: Código 400
-  ```json
-  {
-    "error": "Tipo de plantilla no válido",
-    "allowedTypes": ["welcome", "seguimiento", "bienvenida", "cierre", "notificaciones"]
-  }
-  ```
+## Enlaces
 
-### Obtener una plantilla específica
-- **URL**: `/api/templates/:id`
-- **Método**: `GET`
-- **Respuesta exitosa**: Código 200
-  ```json
-  {
-    "_id": "60d21b4667d0d8992e610c85",
-    "type": "welcome",
-    "content": "Primera plantilla",
-    "author": "Alexander Gomez",
-    "createdAt": "2023-06-22T15:24:26.256Z"
-  }
-  ```
-- **Respuesta de error**: Código 404 o 400
-  ```json
-  {
-    "error": "Plantilla no encontrada"
-  }
-  ```
+- **Repositorio**: [GitHub](https://github.com/usuario/fastcrm-express-api)
+- **API Documentación**: [Swagger UI](https://fastcrm-api.ejemplo.com/api-docs)
+- **Deploy**: [API en producción](https://fastcrm-api.ejemplo.com)
 
-### Crear una nueva plantilla
-- **URL**: `/api/templates`
-- **Método**: `POST`
-- **Cuerpo de la solicitud**:
-  ```json
-  {
-    "content": "Nueva plantilla de prueba",
-    "author": "Tester"
-  }
-  ```
-- **Respuesta exitosa**: Código 201
-  ```json
-  {
-    "template": {
-      "_id": "60d21b4667d0d8992e610c87",
-      "type": "welcome",
-      "content": "Nueva plantilla de prueba",
-      "author": "Tester",
-      "createdAt": "2023-06-23T10:15:30.123Z"
-    }
-  }
-  ```
-- **Respuesta de error**: Código 400 o 500
-  ```json
-  {
-    "error": "El contenido y el autor son obligatorios"
-  }
-  ```
+## Endpoints Disponibles
 
-### Actualizar una plantilla existente
-- **URL**: `/api/templates/:id`
-- **Método**: `PUT`
-- **Cuerpo de la solicitud**:
-  ```json
-  {
-    "content": "Contenido actualizado",
-    "type": "notification"
-  }
-  ```
-- **Respuesta exitosa**: Código 200
-  ```json
-  {
-    "template": {
-      "_id": "60d21b4667d0d8992e610c85",
-      "type": "notification",
-      "content": "Contenido actualizado",
-      "author": "Alexander Gomez",
-      "createdAt": "2023-06-22T15:24:26.256Z"
-    }
-  }
-  ```
-- **Respuesta de error**: Código 404, 400 o 500
-  ```json
-  {
-    "error": "Plantilla no encontrada"
-  }
-  ```
+### Contactos
+- `GET /api/contacts` - Obtener todos los contactos
+- `GET /api/contacts/:id` - Obtener un contacto por ID
+- `POST /api/contacts` - Crear un nuevo contacto
+- `PUT /api/contacts/:id` - Actualizar un contacto existente
+- `DELETE /api/contacts/:id` - Eliminar un contacto
 
-### Eliminar una plantilla
-- **URL**: `/api/templates/:id`
-- **Método**: `DELETE`
-- **Respuesta exitosa**: Código 200
-  ```json
-  {
-    "message": "Plantilla eliminada correctamente"
-  }
-  ```
-- **Respuesta de error**: Código 404, 400 o 500
-  ```json
-  {
-    "error": "Plantilla no encontrada"
-  }
-  ```
+### Empresas
+- `GET /api/companies` - Obtener todas las empresas
+- `GET /api/companies/:id` - Obtener una empresa por ID
+- `POST /api/companies` - Crear una nueva empresa
+- `PUT /api/companies/:id` - Actualizar una empresa existente
+- `DELETE /api/companies/:id` - Eliminar una empresa
 
-## Ejemplos de Uso con curl
+### Plantillas
+- `GET /api/templates` - Obtener todas las plantillas
+- `GET /api/templates/:id` - Obtener una plantilla por ID
+- `POST /api/templates` - Crear una nueva plantilla
+- `PUT /api/templates/:id` - Actualizar una plantilla existente
+- `DELETE /api/templates/:id` - Eliminar una plantilla
 
-### Obtener todas las plantillas
-```bash
-curl -X GET http://localhost:3000/api/templates
-```
-
-### Buscar plantillas por palabras clave
-```bash
-curl -X GET "http://localhost:3000/api/templates?q=bienvenido"
-```
-
-### Filtrar plantillas por tipo
-```bash
-curl -X GET "http://localhost:3000/api/templates?type=welcome"
-```
-
-### Buscar y filtrar plantillas combinando parámetros
-```bash
-curl -X GET "http://localhost:3000/api/templates?q=bienvenido&type=welcome"
-```
-
-### Crear una nueva plantilla
-```bash
-curl -X POST http://localhost:3000/api/templates \
-  -H "Content-Type: application/json" \
-  -d '{"content": "Nueva plantilla de prueba", "author": "Tester"}'
-```
-
-### Actualizar una plantilla existente
-```bash
-curl -X PUT http://localhost:3000/api/templates/60d21b4667d0d8992e610c85 \
-  -H "Content-Type: application/json" \
-  -d '{"content": "Contenido actualizado", "type": "notification"}'
-```
-
-### Eliminar una plantilla
-```bash
-curl -X DELETE http://localhost:3000/api/templates/60d21b4667d0d8992e610c85
-```
-
-## Validaciones
-
-El modelo de plantilla incluye validaciones básicas:
-
-```javascript
-const templateSchema = new Schema({
-    type: {type: String, default: 'welcome'},
-    content: {type: String, required: [true, 'El contenido es obligatorio']},
-    labels: [{label: String}],
-    author: {type: String, required: [true, 'El autor es obligatorio']},
-    createdAt: {type: Date, default: Date.now}
-});
-```
-
-## Optimizaciones de Rendimiento
-
-Se han implementado las siguientes optimizaciones para mejorar el rendimiento de las consultas:
-
-### Índices en MongoDB
-
-```javascript
-// Índice de texto en el campo content para optimizar búsquedas por palabras clave
-templateSchema.index({content: 'text'});
-
-// Índice simple en el campo type para optimizar filtrado por tipo
-templateSchema.index({type: 1});
-```
-
-### Evaluación de Rendimiento
-
-Se ha implementado un sistema de evaluación de rendimiento que utiliza el método `.explain('executionStats')` de MongoDB para analizar la eficiencia de las consultas. Los resultados detallados se pueden encontrar en el archivo `performance-notes.md`.
-
-Para ejecutar las pruebas de rendimiento:
-
-```bash
-node runPerformanceTest.js
-```
-
-Esto generará un archivo `performance-results.json` con los resultados detallados de las pruebas y actualizará el archivo `performance-notes.md` con un resumen de los resultados.
-
+### Registros de Contacto
+- `GET /api/contactlogs` - Obtener todos los registros
+- `GET /api/contactlogs/:id` - Obtener un registro por ID
+- `POST /api/contactlogs` - Crear un nuevo registro
+- `PUT /api/contactlogs/:id` - Actualizar un registro existente
+- `DELETE /api/contactlogs/:id` - Eliminar un registro
+- `GET /api/contacts/:contactId/logs` - Obtener registros por contacto
