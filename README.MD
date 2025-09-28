@@ -87,8 +87,7 @@ API RESTful para un sistema CRM desarrollado con Express.js y PostgreSQL, diseñ
 ## Enlaces
 
 - **Repositorio**: [GitHub](https://github.com/usuario/fastcrm-express-api)
-- **API Documentación**: [Swagger UI](https://fastcrm-api.ejemplo.com/api-docs)
-- **Deploy**: [API en producción](https://fastcrm-api.ejemplo.com)
+- **API Documentación**: [Swagger UI](https://fastcrm-express-api-h8j3.onrender.com/api-docs/)
 
 ## Endpoints Disponibles
 
