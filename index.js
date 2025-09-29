@@ -35,8 +35,9 @@ mongoose.connect(mongodb_url,{
  * Methods: Métodos HTTP permitidos
  * allowedHeaders: Cebeceras permitidas
  */
+// origin: 'http://localhost:5173',
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://fastcrm-express-api-h8j3.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
 }));
