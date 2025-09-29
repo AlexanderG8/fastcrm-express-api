@@ -37,7 +37,7 @@ mongoose.connect(mongodb_url,{
  */
 // origin: 'http://localhost:5173',
 app.use(cors({
-    origin: ['https://fastcrm-express-api-h8j3.onrender.com'],
+    origin: ['https://fastcrm-react-app.onrender.com'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type']
 }));
